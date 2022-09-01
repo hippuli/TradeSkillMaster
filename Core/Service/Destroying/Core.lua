@@ -34,6 +34,7 @@ local private = {
 	destroyInfoDB = nil,
 	disenchantSkillLevel = nil,
 	jewelcraftSkillLevel = nil,
+	inscriptionSkillLevel = nil,
 	combineFuture = Future.New("DESTROYING_COMBINE_FUTURE"),
 	destroyFuture = Future.New("DESTROYING_DESTROY_FUTURE"),
 }
@@ -356,6 +357,9 @@ function private.UpdateBagDB()
 		private.disenchantSkillLevel = TSM.Crafting.PlayerProfessions.GetProfessionSkill(UnitName("player"), GetSpellInfo(7411))
 		private.jewelcraftSkillLevel = TSM.Crafting.PlayerProfessions.GetProfessionSkill(UnitName("player"), GetSpellInfo(28897))
 	end
+	if TSM.IsWowWrathClassic() then
+		private.inscriptionSkillLevel = TSM.Crafting.PlayerProfessions.GetProfessionSkill(UnitName("player"), GetSpellInfo(45357))
+	end
 	for _, slotId, itemString, quantity in query:Iterator() do
 		local minQuantity = nil
 		if checkedItem[itemString] then
@@ -452,7 +456,7 @@ function private.IsDestroyable(itemString)
 
 	local hasSourceItem = false
 	for _, _, _, _, _, skillRequired in Conversions.TargetItemsByMethodIterator(itemString, conversionMethod) do
-		if not skillRequired or (private.jewelcraftSkillLevel and skillRequired and private.jewelcraftSkillLevel >= skillRequired) then
+		if not skillRequired or (conversionMethod == Conversions.METHOD.PROSPECT and private.jewelcraftSkillLevel and skillRequired and private.jewelcraftSkillLevel >= skillRequired) or (conversionMethod == Conversions.METHOD.MILL and private.inscriptionSkillLevel and skillRequired and private.inscriptionSkillLevel >= skillRequired) then
 			hasSourceItem = true
 		end
 	end

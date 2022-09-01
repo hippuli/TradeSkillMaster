@@ -130,8 +130,18 @@ function ProfessionUtil.GetResultInfo(craftString, level)
 	end
 	if strfind(itemLink, "enchant:") then
 		-- result of craft is not an item
-		local itemString = ProfessionInfo.GetIndirectCraftResult(spellId)
-		if itemString and not TSM.IsWowClassic() then
+		local indirectSpellId = nil
+		if TSM.IsWowWrathClassic() then
+			indirectSpellId = strmatch(itemLink, "enchant:(%d+)")
+			indirectSpellId = indirectSpellId and tonumber(indirectSpellId)
+			if not indirectSpellId then
+				return true
+			end
+		else
+			indirectSpellId = spellId
+		end
+		local itemString = ProfessionInfo.GetIndirectCraftResult(indirectSpellId)
+		if itemString and (not TSM.IsWowClassic() or TSM.IsWowWrathClassic()) then
 			return TSM.UI.GetColoredItemName(itemString), itemString, ItemInfo.GetTexture(itemString)
 		elseif ProfessionInfo.IsEngineeringTinker(spellId) then
 			local name, _, icon = GetSpellInfo(spellId)
@@ -395,6 +405,7 @@ function ProfessionUtil.GetRecipeInfo(craftString)
 	if TSM.IsWowClassic() then
 		local index = TSM.Crafting.ProfessionScanner.GetIndexByCraftString(craftString) or spellId
 		itemLink = TSM.Crafting.ProfessionState.IsClassicCrafting() and GetCraftItemLink(index) or GetTradeSkillItemLink(index)
+		itemLink = itemLink or (TSM.IsWowWrathClassic() and GetTradeSkillRecipeLink(index)) or nil
 		if TSM.Crafting.ProfessionState.IsClassicCrafting() then
 			if TSM.IsWowBCClassic() then
 				lNum, hNum = GetCraftNumMade(index)
