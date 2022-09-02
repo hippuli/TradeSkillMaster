@@ -17677,7 +17677,7 @@ L["%d Items"] = "%d 物品"
 L["%d of %d"] = "發佈 %d 堆，每堆 %d 個"
 L["%d Operations"] = "%d 作業"
 L["%d Players"] = "%d 玩家"
-L["%d Posted Auctions"] = "%d 個發佈的拍賣"
+L["%d Posted Auctions"] = "%d 個拍賣發佈"
 L["%d Professions"] = "%d 個專業技能"
 --[[Translation missing --]]
 L["%d Rarities"] = "%d Rarities"
@@ -17723,10 +17723,8 @@ L["%s Items Total"] = "%s 所有物品"
 L["%s operation"] = "%s 作業"
 L["%s operations"] = "%s 作業"
 L["%s Operations"] = "%s 作業"
---[[Translation missing --]]
-L["%s Posted Auctions"] = "%s Posted Auctions"
---[[Translation missing --]]
-L["%s Posted Auctions (Filtered)"] = "%s Posted Auctions (Filtered)"
+L["%s Posted Auctions"] = "%s 個拍賣發佈"
+L["%s Posted Auctions (Filtered)"] = "%s 個拍賣發佈（已篩選）"
 --[[Translation missing --]]
 L["%s previously had the max number of operations, so removed %s."] = "%s previously had the max number of operations, so removed %s."
 L["%s removed."] = "%s 移除."

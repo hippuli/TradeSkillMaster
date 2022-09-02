@@ -147,10 +147,15 @@ function ProfessionUtil.GetResultInfo(craftString, level)
 			local name, _, icon = GetSpellInfo(spellId)
 			return name, nil, icon
 		else
-			local name, _, icon = GetSpellInfo(TSM.Crafting.ProfessionState.IsClassicCrafting() and GetCraftInfo(TSM.IsWowClassic() and TSM.Crafting.ProfessionScanner.GetIndexByCraftString(craftString) or spellId) or spellId)
-			return name, nil, icon
+			if TSM.IsWowWrathClassic() then
+				local name, _, icon = GetSpellInfo(indirectSpellId)
+				return name, nil, icon
+			else
+				local name, _, icon = GetSpellInfo(TSM.Crafting.ProfessionState.IsClassicCrafting() and GetCraftInfo(TSM.IsWowClassic() and TSM.Crafting.ProfessionScanner.GetIndexByCraftString(craftString) or spellId) or spellId)
+				return name, nil, icon
+			end
 		end
-	elseif strfind(itemLink, "item:") then
+	elseif strfind(itemLink, "item:%d+") then
 		-- result of craft is an item
 		return TSM.UI.GetColoredItemName(itemLink), ItemString.Get(itemLink), ItemInfo.GetTexture(itemLink)
 	else
@@ -405,13 +410,11 @@ function ProfessionUtil.GetRecipeInfo(craftString)
 	if TSM.IsWowClassic() then
 		local index = TSM.Crafting.ProfessionScanner.GetIndexByCraftString(craftString) or spellId
 		itemLink = TSM.Crafting.ProfessionState.IsClassicCrafting() and GetCraftItemLink(index) or GetTradeSkillItemLink(index)
+		local emptyLink = strfind(itemLink or "", "item::") and true or false
+		itemLink = not emptyLink and itemLink or nil
 		itemLink = itemLink or (TSM.IsWowWrathClassic() and GetTradeSkillRecipeLink(index)) or nil
 		if TSM.Crafting.ProfessionState.IsClassicCrafting() then
-			if TSM.IsWowBCClassic() then
-				lNum, hNum = GetCraftNumMade(index)
-			else
-				lNum, hNum = 1, 1
-			end
+			lNum, hNum = 1, 1
 			toolsStr, hasTools = GetCraftSpellFocus(index)
 		else
 			lNum, hNum = GetTradeSkillNumMade(index)
@@ -490,8 +493,10 @@ function ProfessionUtil.IsNPCProfession()
 end
 
 function ProfessionUtil.IsLinkedProfession()
-	if TSM.IsWowClassic() then
+	if TSM.IsWowVanillaClassic() then
 		return nil, nil
+	elseif TSM.IsWowWrathClassic() then
+		return IsTradeSkillLinked()
 	else
 		return C_TradeSkillUI.IsTradeSkillLinked()
 	end

@@ -15,7 +15,7 @@ local DATA = nil
 -- Mill Data
 -- ============================================================================
 
-if TSM.IsWowVanillaClassic() or TSM.IsWowBCClassic() then
+if TSM.IsWowVanillaClassic() then
 	DATA = {}
 elseif TSM.IsWowWrathClassic() then
 	DATA = {
